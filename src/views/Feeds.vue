@@ -1,15 +1,16 @@
 <template>
   <div class="feeds">
     <div class="feeds--filter">
-      <button type="button" @click="sortItems('asc')">오름차순</button>
-      <button type="button" @click="sortItems('desc')">내림차순</button>
-      <button type="button" @click="openDialog">필터</button>
+      <button type="button" class="btn sort asc active" @click="sortList('asc')">오름차순</button>
+      <button type="button" class="btn sort desc" @click="sortList('desc')">내림차순</button>
+      <button type="button" class="btn btn--outlined" @click="openDialog">필터</button>
     </div>
     <div class="feeds--cards">
       <template v-for="(item, index) in list">
         <ad
-          v-if="index % 4 === 0 && index !== 0"
+          v-if="adList[index/3 - 1]"
           :key="`ad-card-${index}`"
+          :item="adList[index/3 - 1]"
         ></ad>
         <card
           :key="`card-${index}`"
@@ -19,29 +20,34 @@
     </div>
     <div class="feeds--loading"></div>
     <filter-dialog
-      v-if="dialog"
+      :dialog.sync="dialog"
       :items="category"
+      @select="filterList"
     ></filter-dialog>
   </div>
 </template>
 
 <script>
 import api from '@/mixins/api'
-import dialog from '@/mixins/dialog'
 import Card from '@/components/Card'
 import Ad from '@/components/Ad'
-import FilterDialog from '@/components/FilterDialog'
+import FilterDialog from '@/components/dialog/FilterDialog'
 
 export default {
   name: 'Feeds',
   components: { Card, Ad, FilterDialog },
-  mixins: [api, dialog],
+  mixins: [api],
   data () {
     return {
+      dialog: false,
+
       page: 1,
       sort: 'asc',
+
       list: [],
-      category: []
+      adList: [],
+      category: [],
+      filteredCategory: []
     }
   },
   created () {
@@ -56,27 +62,45 @@ export default {
           this.infiniteScroll()
         })
     },
-    getList () {
+    getList (type) {
       this.api('get', '/list', {
         params: {
           page: this.page,
           ord: this.sort,
-          category: this.category.map(item => item.id),
+          category: type === 'filter' ? this.filteredCategory : this.category.map(item => item.id),
           limit: 10
         }
       })
         .then((data) => {
-          this.list.push(...data.data)
+          if (type === 'filter') this.list = data.data
+          else this.list.push(...data.data)
+          this.getAdList()
         })
     },
-    sortItems (order) {
+    getAdList () {
+      this.api('get', '/ads', {
+        params: {
+          page: 1,
+          limit: Math.floor(this.list.length / 3)
+        }
+      })
+        .then((data) => {
+          this.adList = data.data
+        })
+    },
+    filterList (selected) {
+      this.filteredCategory = selected
+      this.getList('filter')
+    },
+    sortList (order) {
       this.sort = order
+      this.$el.querySelector(`.${order}`).classList.add('active')
+      this.$el.querySelector(`.${order === 'asc' ? 'desc' : 'asc'}`).classList.remove('active')
       this.list.sort((a, b) => order === 'asc' ? a.id - b.id : b.id - a.id)
     },
     infiniteScroll () {
       const target = this.$el.querySelector('.feeds--loading')
       const io = new IntersectionObserver((entries, observer) => {
-        // TODO 처음 분기 처리
         entries.forEach(entry => {
           const isEmptyList = JSON.parse(JSON.stringify(this.list)).length === 0
           if (entry.isIntersecting && !isEmptyList) {
