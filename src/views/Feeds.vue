@@ -1,11 +1,11 @@
 <template>
-  <div class="feeds">
-    <div class="feeds--filter">
+  <div class="feeds row">
+    <div class="feeds--filter col">
       <button type="button" class="btn sort asc active" @click="sortList('asc')">오름차순</button>
       <button type="button" class="btn sort desc" @click="sortList('desc')">내림차순</button>
       <button type="button" class="btn btn--outlined" @click="openDialog">필터</button>
     </div>
-    <div class="feeds--cards">
+    <div class="feeds--cards col">
       <template v-for="(item, index) in list">
         <ad
           v-if="adList[index/3 - 1]"
@@ -18,7 +18,7 @@
         ></card>
       </template>
     </div>
-    <div class="feeds--loading"></div>
+    <div v-show="$store.getters.loading" class="feeds--loading"></div>
     <filter-dialog
       :dialog.sync="dialog"
       :items="category"
@@ -32,6 +32,13 @@ import api from '@/mixins/api'
 import Card from '@/components/Card'
 import Ad from '@/components/Ad'
 import FilterDialog from '@/components/dialog/FilterDialog'
+import {
+  mapState,
+  mapActions
+} from 'vuex'
+import {
+  getItem
+} from '@/mixins/stoarge'
 
 export default {
   name: 'Feeds',
@@ -41,36 +48,35 @@ export default {
     return {
       dialog: false,
 
-      page: 1,
-      sort: 'asc',
-
       list: [],
       adList: [],
       category: [],
       filteredCategory: []
     }
   },
+  computed: {
+    ...mapState('feeds', [
+      'params'
+    ])
+  },
   created () {
     this.getCategory()
   },
   methods: {
+    ...mapActions([
+      'updateParams'
+    ]),
     getCategory () {
       this.api('get', '/category', { assignTarget: 'category' })
         .then((data) => {
           this.category = data.category
+          this.getFilteredCategory()
           this.getList()
           this.infiniteScroll()
         })
     },
     getList (type) {
-      this.api('get', '/list', {
-        params: {
-          page: this.page,
-          ord: this.sort,
-          category: type === 'filter' ? this.filteredCategory : this.category.map(item => item.id),
-          limit: 10
-        }
-      })
+      this.api('get', '/list', { params: this.params })
         .then((data) => {
           if (type === 'filter') this.list = data.data
           else this.list.push(...data.data)
@@ -88,12 +94,18 @@ export default {
           this.adList = data.data
         })
     },
+    getFilteredCategory () {
+      const filtered = getItem('filter')
+      this.updateParams({
+        category: filtered && filtered.length > 0 ? filtered : this.category.map(item => item.id)
+      })
+    },
     filterList (selected) {
-      this.filteredCategory = selected
+      this.updateParams({ category: selected })
       this.getList('filter')
     },
     sortList (order) {
-      this.sort = order
+      this.updateParams({ ord: order })
       this.$el.querySelector(`.${order}`).classList.add('active')
       this.$el.querySelector(`.${order === 'asc' ? 'desc' : 'asc'}`).classList.remove('active')
       this.list.sort((a, b) => order === 'asc' ? a.id - b.id : b.id - a.id)
@@ -104,7 +116,7 @@ export default {
         entries.forEach(entry => {
           const isEmptyList = JSON.parse(JSON.stringify(this.list)).length === 0
           if (entry.isIntersecting && !isEmptyList) {
-            this.page++
+            this.updateParams({ page: this.page + 1 })
             this.getList()
           }
         })

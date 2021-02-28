@@ -1,13 +1,11 @@
 <template>
   <section class="card row" @click="$router.push({ name: 'Details', params: { id: item.id } })">
-    <div class="col">
+    <div class="col card__header">
       <p class="desc">카테고리 아이템</p>
       <p class="desc">{{ item.id }}</p>
+      <p class="desc">{{ item.user_id }} | {{ item.created_at | dateFormat }}</p>
     </div>
-    <div class="col">
-      <p class="desc">{{ item.user_id }} | {{ item.created_at }}</p>
-    </div>
-    <div class="col">
+    <div class="col card__contents">
       <h3>{{ item.title }}</h3>
       <p>{{ item.contents }}</p>
     </div>
@@ -15,17 +13,16 @@
 </template>
 
 <script>
+import util from '@/mixins/util'
+
 export default {
   name: 'Card',
   props: {
     item: {
       required: true,
       type: Object
-    },
-    contents: {
-      // required: true,
-      type: Object
     }
-  }
+  },
+  mixins: [util]
 }
 </script>

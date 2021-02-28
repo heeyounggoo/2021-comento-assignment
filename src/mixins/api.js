@@ -1,10 +1,22 @@
 import axios from 'axios'
+import store from '@/store/'
 
 const instance = axios.create({
   baseURL: '/api',
   headers: {
     Accept: 'application/json'
   }
+})
+
+// loading
+instance.interceptors.request.use(config => {
+  store.dispatch('addLoading', config.url.replace(/\//, ''))
+  return config
+})
+
+instance.interceptors.response.use(response => {
+  store.dispatch('removeLoading', response.config.url.replace(/\//, ''))
+  return response
 })
 
 export default {
