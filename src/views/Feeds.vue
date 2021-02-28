@@ -12,17 +12,17 @@
           :key="`ad-card-${index}`"
           :options="{ footer: false }"
           :item="adList[index/3 - 1]"
-          class="feeds__cards--ad"
+          class="feeds__cards--ad ellipsis"
         >
           <template v-slot:header>
             <p class="desc">sponsored</p>
           </template>
           <template v-slot:contents="{ card }">
             <div class="row no-gutters">
-              <div class="col cols-12 cols-md-3">
+              <div class="col cols-12 cols-md-4">
                 <img :src="`https://cdn.comento.kr/assignment/${card.img}`" alt="ad-img">
               </div>
-              <div class="col cols-12 cols-md-9">
+              <div class="col cols-12 cols-md-8">
                 <h3>{{ card.title }}</h3>
                 <p>{{ card.contents }}</p>
               </div>

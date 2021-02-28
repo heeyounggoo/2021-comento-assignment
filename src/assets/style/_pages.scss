@@ -101,8 +101,21 @@ body {
 
     &__cards {
       &--ad {
-        .cols-12:last-child {
-          padding-left: 24px;
+        .cols-12 {
+          &:first-child {
+            height: 180px;
+          }
+
+          &:last-child {
+            padding-left: 24px;
+
+            p {
+              display: -webkit-box;
+              -webkit-line-clamp: 6;
+              -webkit-box-orient: vertical;
+              white-space: normal;
+            }
+          }
         }
       }
 
