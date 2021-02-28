@@ -29,6 +29,9 @@
 <script>
 import dialog from '@/mixins/dialog'
 import {
+  mapState
+} from 'vuex'
+import {
   getItem,
   setItem
 } from '@/mixins/stoarge'
@@ -40,16 +43,17 @@ export default {
     dialog: {
       required: false,
       type: Boolean
-    },
-    items: {
-      required: true,
-      type: Array
     }
   },
   data () {
     return {
       selected: []
     }
+  },
+  computed: {
+    ...mapState('feeds', {
+      items: state => state.category
+    })
   },
   watch: {
     dialog () {

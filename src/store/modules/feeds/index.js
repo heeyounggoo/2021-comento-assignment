@@ -6,12 +6,16 @@ export default {
       ord: 'asc',
       category: [1, 2, 3],
       limit: 10
-    }
+    },
+    category: []
   },
   getters: {},
   mutations: {
     UPDATE_PARAMS (state, payload) {
       state.params = Object.assign({}, state.params, payload)
+    },
+    UPDATE_CATEGORY (state, payload) {
+      state.category = payload
     }
   },
   actions: {
@@ -19,6 +23,12 @@ export default {
       root: true,
       handler ({ commit }, payload) {
         commit('UPDATE_PARAMS', payload)
+      }
+    },
+    updateCategory: {
+      root: true,
+      handler ({ commit }, payload) {
+        commit('UPDATE_CATEGORY', payload)
       }
     }
   }

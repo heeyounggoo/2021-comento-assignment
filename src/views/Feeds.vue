@@ -21,7 +21,6 @@
     <div v-show="$store.getters.loading" class="feeds--loading"></div>
     <filter-dialog
       :dialog.sync="dialog"
-      :items="category"
       @select="filterList"
     ></filter-dialog>
   </div>
@@ -50,13 +49,13 @@ export default {
 
       list: [],
       adList: [],
-      category: [],
       filteredCategory: []
     }
   },
   computed: {
     ...mapState('feeds', [
-      'params'
+      'params',
+      'category'
     ])
   },
   created () {
@@ -64,12 +63,13 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateParams'
+      'updateParams',
+      'updateCategory'
     ]),
     getCategory () {
       this.api('get', '/category', { assignTarget: 'category' })
         .then((data) => {
-          this.category = data.category
+          this.updateCategory(data.category)
           this.getFilteredCategory()
           this.getList()
           this.infiniteScroll()
