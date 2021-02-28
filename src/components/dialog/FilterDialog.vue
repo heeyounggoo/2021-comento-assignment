@@ -20,7 +20,7 @@
         </label>
       </div>
       <div class="dialog__action col text-right">
-        <button type="button" @click="emitSelected">저장하기</button>
+        <button type="button" class="btn btn--default primary" @click="emitSelected">저장하기</button>
       </div>
     </div>
   </div>

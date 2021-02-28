@@ -7,15 +7,46 @@
     </div>
     <div class="feeds--cards col">
       <template v-for="(item, index) in list">
-        <ad
+        <card
           v-if="adList[index/3 - 1]"
           :key="`ad-card-${index}`"
+          :options="{ footer: false }"
           :item="adList[index/3 - 1]"
-        ></ad>
+        >
+          <template v-slot:header>
+            <p class="desc">sponsored</p>
+          </template>
+          <template v-slot:contents="{ card }">
+            <div class="row no-gutters">
+              <div class="col cols-3 pr-3">
+                <img :src="`https://cdn.comento.kr/assignment/${card.img}`" alt="ad-img">
+              </div>
+              <div class="col cols-9 pl-3">
+                <h3>{{ card.title }}</h3>
+                <p>{{ card.contents }}</p>
+              </div>
+            </div>
+          </template>
+        </card>
         <card
           :key="`card-${index}`"
+          :options="{ footer: false }"
+          :to="{ name: 'Details', params: { id: item.id } }"
           :item="item"
-        ></card>
+          class="ellipsis"
+        >
+          <template v-slot:header>
+            <div class="row no-gutters">
+              <div class="col header pb-3">
+                <p class="desc">{{ categoryName(item.category_id) }}</p>
+                <p class="desc">{{ item.id }}</p>
+              </div>
+              <div class="col sub-header pt-2">
+                <p class="desc"><span class="text--primary">{{ item.user_id }}</span> <span class="text--black">| {{ item.created_at | dateFormat }}</span></p>
+              </div>
+            </div>
+          </template>
+        </card>
       </template>
     </div>
     <div v-show="$store.getters.loading" class="feeds--loading"></div>
@@ -28,8 +59,8 @@
 
 <script>
 import api from '@/mixins/api'
+import util from '@/mixins/util'
 import Card from '@/components/Card'
-import Ad from '@/components/Ad'
 import FilterDialog from '@/components/dialog/FilterDialog'
 import {
   mapState,
@@ -41,8 +72,8 @@ import {
 
 export default {
   name: 'Feeds',
-  components: { Card, Ad, FilterDialog },
-  mixins: [api],
+  components: { Card, FilterDialog },
+  mixins: [api, util],
   data () {
     return {
       dialog: false,
@@ -56,7 +87,12 @@ export default {
     ...mapState('feeds', [
       'params',
       'category'
-    ])
+    ]),
+    categoryName () {
+      return (categoryId) => {
+        return this.category.find(item => item.id === categoryId).name
+      }
+    }
   },
   created () {
     this.getCategory()

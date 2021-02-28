@@ -1,13 +1,18 @@
 <template>
-  <section class="card row" @click="$router.push({ name: 'Details', params: { id: item.id } })">
-    <div class="col card__header">
-      <p class="desc">{{ categoryName(item.category_id) }}</p>
-      <p class="desc">{{ item.id }}</p>
-      <p class="desc">{{ item.user_id }} | {{ item.created_at | dateFormat }}</p>
+  <section class="card row" @click="routerPush">
+    <div v-if="option.header" class="col card__header">
+      <slot name="header" :card="item"></slot>
     </div>
-    <div class="col card__contents">
-      <h3>{{ item.title }}</h3>
-      <p>{{ item.contents }}</p>
+    <div v-if="option.contents" class="col card__contents">
+      <slot name="contents" :card="item">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.contents }}</p>
+      </slot>
+    </div>
+    <div v-if="option.footer" class="col card__footer">
+      <slot name="footer">
+        <p class="desc">{{ item.created_at | dateFormat }}</p>
+      </slot>
     </div>
   </section>
 </template>
@@ -24,16 +29,37 @@ export default {
     item: {
       required: true,
       type: Object
-    }
+    },
+    to: {
+      type: [Object, String]
+    },
+    headerId: String,
+    options: Object
   },
   mixins: [util],
+  data () {
+    return {
+      defaultOptions: {
+        header: true,
+        contents: true,
+        footer: true
+      }
+    }
+  },
   computed: {
     ...mapState('feeds', [
       'category'
     ]),
-    categoryName () {
-      return (categoryId) => {
-        return this.category.find(item => item.id === categoryId).name
+    option () {
+      return Object.assign({}, this.defaultOptions, this.options)
+    }
+  },
+  methods: {
+    routerPush () {
+      if (this.to) {
+        const target = typeof to === 'string' ? { name: this.to } : this.to
+        console.log(target)
+        this.$router.push(target)
       }
     }
   }
