@@ -1,10 +1,74 @@
+// 레이아웃 관련 공통 스타일 및 클래
+
 .row {
   display: flex;
   flex: 1 1 auto;
   flex-wrap: wrap;
+
+  &.no-gutters {
+    [class*=cols-] {
+      padding: 0;
+    }
+
+    .col {
+      padding: 0;
+    }
+  }
 }
 
 .col {
-  flex: 0 0 100%;
-  max-width: 100%;
+  //flex: 1 1 100%;
+  width: 100%;
+  padding: 12px;
 }
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+@mixin make-col () {
+  @for $i from 1 through $column {
+    .cols-#{$i} {
+      flex: 0 0 $i / $column * 100%;
+      max-width: $i / $column * 100%;
+    }
+
+    @each $grid-name, $grid-size in $grid {
+      @media (min-width: #{$grid-size}) {
+        .cols-#{$grid-name}-#{$i} {
+          flex: 0 0 $i / $column * 100% !important;
+          max-width: $i / $column * 100% !important;;
+        }
+      }
+    }
+  }
+}
+
+@mixin make-spacing () {
+  @each $name, $value in $spaceName {
+    @each $dir, $dir-value in $direction {
+      @for $i from 0 through $size {
+        .#{$name}#{$dir}-#{$i} {
+          #{$value}-#{$dir-value}: #{$i * $spacing}px !important;
+        }
+      }
+    }
+  }
+}
+
+// background
+.primary {
+  background: $primary !important;
+  color: white !important;
+}
+
+@include make-col;
+@include make-spacing;

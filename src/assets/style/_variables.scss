@@ -1,1 +1,25 @@
+// color
+$primary: #00C854;
+$heading: #282C30;
+$content: #495057;
+$sub-content: #ADB5BD;
+$border-color: #E1E4E7;
+$background: #F4F5F7;
 
+// icon path
+$icon-path: '~@/assets/icon';
+
+$grid-md: 768px;
+
+$column: 12;
+$grid: ('md': #{$grid-md});
+$spaceName: ('p': 'padding', 'm': 'margin');
+$size: 4;
+$spacing: 4;
+$direction: ('l': 'left', 'r': 'right', 't': 'top', 'b': 'bottom');
+
+@mixin max-md {
+  @media (max-width: #{$grid-md}) {
+    @content
+  }
+}

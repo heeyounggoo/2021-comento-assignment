@@ -1,15 +1,31 @@
 h3 {
   font-size: 18px;
   font-weight: bold;
-  color: #282C30;
+  color: $heading
 }
 
 p {
   font-size: 16px;
-  color: #495057;
+  color: $content;
 
   &.desc {
     font-size: 13px;
-    color: #495057;
+    color: $sub-content;
   }
+}
+
+.text--primary {
+  color: $primary !important;
+}
+
+.text--black {
+  color: $content !important;
+}
+
+.text--gray {
+  color: $sub-content;
+}
+
+.text--bold {
+  font-weight: bold !important;
 }

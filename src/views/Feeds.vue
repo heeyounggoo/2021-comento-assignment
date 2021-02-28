@@ -1,27 +1,28 @@
 <template>
   <div class="feeds row">
-    <div class="feeds--filter col">
+    <div class="feeds__filter col">
       <button type="button" class="btn sort asc active" @click="sortList('asc')">오름차순</button>
       <button type="button" class="btn sort desc" @click="sortList('desc')">내림차순</button>
-      <button type="button" class="btn btn--outlined" @click="openDialog">필터</button>
+      <button type="button" class="btn btn--outlined btn--small text--gray" @click="openDialog">필터</button>
     </div>
-    <div class="feeds--cards col">
+    <div class="feeds__cards col">
       <template v-for="(item, index) in list">
         <card
           v-if="adList[index/3 - 1]"
           :key="`ad-card-${index}`"
           :options="{ footer: false }"
           :item="adList[index/3 - 1]"
+          class="feeds__cards--ad"
         >
           <template v-slot:header>
             <p class="desc">sponsored</p>
           </template>
           <template v-slot:contents="{ card }">
             <div class="row no-gutters">
-              <div class="col cols-3 pr-3">
+              <div class="col cols-12 cols-md-3">
                 <img :src="`https://cdn.comento.kr/assignment/${card.img}`" alt="ad-img">
               </div>
-              <div class="col cols-9 pl-3">
+              <div class="col cols-12 cols-md-9">
                 <h3>{{ card.title }}</h3>
                 <p>{{ card.contents }}</p>
               </div>
@@ -41,7 +42,7 @@
                 <p class="desc">{{ categoryName(item.category_id) }}</p>
                 <p class="desc">{{ item.id }}</p>
               </div>
-              <div class="col sub-header pt-2">
+              <div class="col sub-header pt-3">
                 <p class="desc"><span class="text--primary">{{ item.user_id }}</span> <span class="text--black">| {{ item.created_at | dateFormat }}</span></p>
               </div>
             </div>
@@ -49,7 +50,7 @@
         </card>
       </template>
     </div>
-    <div v-show="$store.getters.loading" class="feeds--loading"></div>
+    <div v-show="$store.getters.loading" class="feeds__loading"></div>
     <filter-dialog
       :dialog.sync="dialog"
       @select="filterList"
@@ -137,7 +138,7 @@ export default {
       })
     },
     filterList (selected) {
-      this.updateParams({ category: selected })
+      this.updateParams({ category: selected.length === 0 ? this.category.map(item => item.id) : selected })
       this.getList('filter')
     },
     sortList (order) {
@@ -147,7 +148,7 @@ export default {
       this.list.sort((a, b) => order === 'asc' ? a.id - b.id : b.id - a.id)
     },
     infiniteScroll () {
-      const target = this.$el.querySelector('.feeds--loading')
+      const target = this.$el.querySelector('.feeds__loading')
       const io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           const isEmptyList = JSON.parse(JSON.stringify(this.list)).length === 0
@@ -162,37 +163,10 @@ export default {
 
       if (target) io.observe(target)
     },
-    openDialog () {
+    openDialog (event) {
+      event.target.blur()
       this.dialog = true
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .feeds--loading {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto;
-
-    &:after {
-      content: " ";
-      display: block;
-      width: 64px;
-      height: 64px;
-      margin: 8px;
-      border-radius: 50%;
-      border: 6px solid;
-      border-color: #fff #00C854 #fff #00C854;
-      animation: loading-ring 1.2s linear infinite;
-    }
-  }
-  @keyframes loading-ring {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-</style>

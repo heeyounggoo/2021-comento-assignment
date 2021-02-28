@@ -7,7 +7,7 @@
       <nav class="sidebar cols-3 pt-3 pr-3 mr-4" v-if="$route.name === 'Feeds'">
         <button type="button" class="btn btn--xlarge primary text--bold">로그인</button>
       </nav>
-      <main :class="$route.name === 'Feeds' ? 'cols-9' : 'cols-12'">
+      <main :class="$route.name === 'Feeds' ? 'cols-12 cols-md-9' : 'cols-12'">
         <router-view/>
       </main>
     </div>

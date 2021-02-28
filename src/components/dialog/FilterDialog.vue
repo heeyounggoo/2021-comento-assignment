@@ -78,7 +78,6 @@ export default {
       })
     },
     emitSelected () {
-      // TODO 아무것도 선택 안 할 때 안내처리
       setItem('filter', this.selected)
       this.$emit('select', this.selected)
       this.close()

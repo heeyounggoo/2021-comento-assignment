@@ -1,5 +1,5 @@
 <template>
-  <section class="card row" @click="routerPush">
+  <section :class="`card row ${to ? 'card--clickable' : ''}`" @click="routerPush">
     <div v-if="option.header" class="col card__header">
       <slot name="header" :card="item"></slot>
     </div>

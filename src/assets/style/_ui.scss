@@ -1,0 +1,181 @@
+// 사용되는 ui별 공통 스타일
+
+// button
+.btn {
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+
+  &--outlined {
+    border-radius: 3px;
+    border: 1px solid #E1E4E7;
+  }
+
+  &--default {
+    padding: 8px 20px;
+  }
+
+  &--small {
+    padding: 4px 12px;
+  }
+
+  &--xlarge {
+    padding: 14px 20px;
+  }
+}
+
+// img
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  @include max-md {
+    height: 180px;
+  }
+}
+
+// dialog
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 460px;
+  background: white;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      width: 12px;
+      height: 12px;
+      background-image: url(#{$icon-path}/close.svg);
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-size: 16px;
+      color: $content;
+    }
+  }
+}
+
+// card
+.card {
+  border: 1px solid $border-color;
+  border-radius: 5px;
+  padding: 8px;
+  margin-bottom: 30px;
+  background-color: white;
+
+  @include max-md {
+    border: none;
+    border-radius: 0;
+    position: relative;
+  }
+
+  &--clickable {
+    cursor: pointer;
+  }
+
+  &__header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid $border-color;
+    }
+
+    .sub-header {
+      margin-bottom: -12px;
+    }
+  }
+
+  &__contents {
+    overflow: hidden;
+
+    h3 {
+      padding-bottom: 12px;
+    }
+  }
+
+  &.ellipsis {
+    .card__contents {
+      overflow: hidden;
+
+      h3, p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  &.underline {
+    @include max-md {
+      //padding: 0;
+
+      &:before, &:after {
+        content: '';
+        position: absolute;
+        width: calc(100% - 40px);
+        height: 1px;
+        left: 20px;
+        background-color: $border-color;
+      }
+
+      &:after {
+        bottom: 0;
+      }
+    }
+
+    .card__header:before {
+      content: '';
+      position: absolute;
+      width: calc(100% - 24px);
+      height: 1px;
+      background: $border-color;
+      bottom: 0;
+      left: 12px;
+    }
+  }
+
+  &.active {
+    border: 1px solid $primary;
+
+    @include max-md {
+      border: 0;
+      padding: 12px 0;
+
+      .card__footer {
+        padding-bottom: 0;
+      }
+
+      &:before, &:after {
+        content: '';
+        position: absolute;
+        width: calc(100% - 12px);
+        height: 1px;
+        left: 12px;
+        background-color: $primary;
+      }
+
+      &:after {
+        bottom: 0;
+      }
+    }
+  }
+}
+

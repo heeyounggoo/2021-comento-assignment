@@ -1,14 +1,160 @@
-// card
-.card {
-  border: 1px solid #E1E4E7;
-  border-radius: 5px;
-  padding: 20px 30px;
-  margin-bottom: 30px;
+body {
+  &.hidden {
+    overflow: hidden;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    z-index: 5;
+  }
 }
 
-// filter dialog
-.dialog {
-  position: fixed;
-  top: 0;
-  width: 460px;
+#app {
+  .topbar {
+    display: flex;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    height: 70px;
+    box-shadow: 0px 1px 5px rgba(0,0,0,0.12);
+    background-color: white;
+    z-index: 1;
+
+    p {
+      width: 100%;
+      align-self: center;
+      text-align: center;
+    }
+  }
+
+  .container {
+    display: flex;
+    width: 80%;
+    margin: 70px auto;
+    padding: 38px 0;
+
+    @include max-md {
+      width: 100%;
+      padding: 0;
+    }
+
+    nav {
+      @include max-md {
+        display: none;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .feeds {
+    @include max-md {
+      background: $background;
+    }
+
+    &__filter {
+      display: flex;
+      background: white;
+
+      @include max-md {
+        padding: 24px;
+        border-bottom: 1px solid $border-color;
+      }
+
+      .sort {
+        position: relative;
+        padding-left: 12px;
+
+        &:first-child {
+          margin-right: 10px;
+        }
+
+        &:before {
+          content: '';
+          position: absolute;
+          width: 6px;
+          height: 6px;
+          top: 50%;
+          left: 0;
+          border-radius: 50%;
+          background: $border-color;
+          transform: translateY(-50%);
+        }
+
+        &.active {
+          &:before {
+            background: $primary;
+          }
+        }
+      }
+
+      button:last-child {
+        margin-left: auto;
+      }
+    }
+
+    &__cards {
+      &--ad {
+        .cols-12:last-child {
+          padding-left: 24px;
+        }
+      }
+
+      @include max-md {
+        padding: 0;
+
+        &--ad {
+          .cols-12:last-child {
+            padding-left: 0;
+            padding-top: 12px;
+          }
+        }
+      }
+    }
+
+    &__loading {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+
+      &:after {
+        content: " ";
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border-radius: 50%;
+        border: 6px solid;
+        border-color: transparent #00C854 transparent #00C854;
+        animation: loading-ring 1.2s linear infinite;
+      }
+    }
+
+    @keyframes loading-ring {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  .details {
+    &__reply {
+      @include max-md {
+        padding: 0;
+
+        &__total {
+          padding-left: 20px;
+        }
+      }
+    }
+  }
 }

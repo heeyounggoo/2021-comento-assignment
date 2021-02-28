@@ -4,9 +4,15 @@
       <card
         :item="details"
         :options="{ header: false }"
+        class="active"
       ></card>
     </div>
-    <div class="col">
+    <div class="col details__reply">
+      <div class="row no-gutters">
+        <div class="col details__reply__total">
+          <p>답변 <span class="text--primary">{{ details.reply.length }}</span></p>
+        </div>
+      </div>
       <template v-for="(item, index) in details.reply">
         <card
           :key="`card-reply-${index}`"
